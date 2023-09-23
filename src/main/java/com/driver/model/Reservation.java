@@ -11,12 +11,8 @@ public class Reservation {
 
     int numberOfHours;
 
-    @ManyToOne
-    @JoinColumn
     Spot spot;
 
-    @ManyToOne
-    @JoinColumn
     User user;
 
     @OneToOne(mappedBy = "reservation",cascade = CascadeType.ALL)
