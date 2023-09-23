@@ -1,7 +1,5 @@
 package com.driver.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +9,15 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
 
-    String name;
+    private String name;
 
-    String phoneNumber;
+    private String phoneNumber;
 
-    String password;
-
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    @JsonIgnore
-    List<Reservation> reservationList = new ArrayList<>();
+    private String password;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Reservation> reservationList = new ArrayList<>();
 
     public User() {
     }

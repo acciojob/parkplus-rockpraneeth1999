@@ -6,6 +6,7 @@ import com.driver.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -15,36 +16,23 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository4;
     @Override
     public void deleteUser(Integer userId) {
-        Optional<User> optionalUser = userRepository4.findById(userId);
-        if(!optionalUser.isPresent()){
-            throw new RuntimeException("Invalid userId");
-        }
-
-        User user = optionalUser.get();
-        userRepository4.delete(user);
+        userRepository4.deleteById(userId);
     }
 
     @Override
     public User updatePassword(Integer userId, String password) {
-        Optional<User> optionalUser = userRepository4.findById(userId);
-        if(!optionalUser.isPresent()){
-            throw new RuntimeException("Invalid userId");
-        }
-
-        User user = optionalUser.get();
-        user.setPassword(password);
-        user = userRepository4.save(user);
-
-        return user;
+        Optional<User> userOptional = userRepository4.findById(userId);
+        userOptional.get().setPassword(password);
+        return userRepository4.save(userOptional.get());
     }
 
     @Override
     public void register(String name, String phoneNumber, String password) {
         User user = new User();
         user.setName(name);
-        user.setPhoneNumber(phoneNumber);
         user.setPassword(password);
-
-        user = userRepository4.save(user);
+        user.setPhoneNumber(phoneNumber);
+        user.setReservationList(new ArrayList<>());
+        userRepository4.save(user);
     }
 }

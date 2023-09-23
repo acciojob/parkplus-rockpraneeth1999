@@ -3,10 +3,8 @@ package com.driver.services.impl;
 import com.driver.model.Payment;
 import com.driver.model.PaymentMode;
 import com.driver.model.Reservation;
-import com.driver.model.Spot;
 import com.driver.repository.PaymentRepository;
 import com.driver.repository.ReservationRepository;
-import com.driver.repository.SpotRepository;
 import com.driver.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,65 +18,39 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     PaymentRepository paymentRepository2;
 
-    @Autowired
-    SpotRepository spotRepository;
-
     @Override
     public Payment pay(Integer reservationId, int amountSent, String mode) throws Exception {
-        //check if reservation exists
-        Optional<Reservation> optionalReservation = reservationRepository2.findById(reservationId);
-        if(!optionalReservation.isPresent()){
-            throw new Exception("Invalid reservationId");
+        //Attempt a payment of amountSent for reservationId using the given mode ("cASh", "card", or "upi")
+        //If the amountSent is less than bill, throw "Insufficient Amount" exception, otherwise update payment attributes
+        //If the mode contains a string other than "cash", "card", or "upi" (any character in uppercase or lowercase),
+        // throw "Payment mode not detected" exception.
+        //Note that the reservationId always exists
+        Optional<Reservation> reservationOptional = reservationRepository2.findById(reservationId);
+        Reservation reservation = reservationOptional.get();
+        int amountDue = reservation.getNumberOfHours() * reservation.getSpot().getPricePerHour();
+        if(amountSent < amountDue){
+            return null;
         }
-        Reservation reservation=optionalReservation.get();
-
-        //check mode of payment is valid
-        PaymentMode paymentMode;
-        if(mode.equals("cash")){
-            paymentMode=PaymentMode.CASH;
+        String MODE = mode.toUpperCase();
+        String cash = PaymentMode.CASH.name();
+        String upi = PaymentMode.UPI.name();
+        String card = PaymentMode.CARD.name();
+        if(!MODE.equals(cash) && !MODE.equals(upi) && !MODE.equals(card)){
+            return null;
         }
-        else if(mode.equals("card")){
-            paymentMode=PaymentMode.CARD;
+        PaymentMode paymentMode = null;
+        if(MODE.equals(cash)){
+            paymentMode = PaymentMode.CASH;
+        } else if(MODE.equals(card)){
+            paymentMode = PaymentMode.CARD;
+        } else {
+            paymentMode = PaymentMode.UPI;
         }
-        else if(mode.equals("upi")){
-            paymentMode=PaymentMode.UPI;
-        }
-        else{
-            throw new Exception("Payment mode not detected");
-        }
-
-        //make payment entity
-        Payment payment = new Payment();
-        payment.setPaymentMode(paymentMode);
-
-        //check amount is enough
-        int pricePerHour=reservation.getSpot().getPricePerHour();
-        int numberOfHours=reservation.getNumberOfHours();
-        int amountRequired=pricePerHour*numberOfHours;
-        if(amountSent<amountRequired){
-            throw new Exception("Insufficient Amount");
-        }
-
-        //set reservation to payment
-        payment.setReservation(reservation);
-
-        //get spot
-        Spot spot = reservation.getSpot();
-        //set spot is occupied
-        spot.setOccupied(true);
-
-        //set payment in reservation
-        reservation.setPayment(payment);
-
-        //set payment status in payment
+        Payment payment = reservation.getPayment();
         payment.setPaymentCompleted(true);
-
-        payment=paymentRepository2.save(payment);
-
-        reservation=reservationRepository2.save(reservation);
-
-        spot=spotRepository.save(spot);
-
-        return payment;
+        payment.setPaymentMode(paymentMode);
+        Payment savedPayment = paymentRepository2.save(payment);
+        reservationRepository2.save(reservation);
+        return  savedPayment;
     }
 }

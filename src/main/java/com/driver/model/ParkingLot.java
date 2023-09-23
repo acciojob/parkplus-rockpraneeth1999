@@ -1,7 +1,5 @@
 package com.driver.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +8,14 @@ import java.util.List;
 public class ParkingLot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
 
-    String name;
+    private String name;
 
-    String address;
+    private String address;
 
     @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL)
-    @JsonIgnore
-    List<Spot> spotList=new ArrayList<>();
+    private List<Spot> spotList = new ArrayList<>();
 
     public ParkingLot() {
     }
@@ -27,6 +24,14 @@ public class ParkingLot {
         this.id = id;
         this.name = name;
         this.address = address;
+        this.spotList = spotList;
+    }
+
+    public List<Spot> getSpotList() {
+        return spotList;
+    }
+
+    public void setSpotList(List<Spot> spotList) {
         this.spotList = spotList;
     }
 
@@ -52,13 +57,5 @@ public class ParkingLot {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public List<Spot> getSpotList() {
-        return spotList;
-    }
-
-    public void setSpotList(List<Spot> spotList) {
-        this.spotList = spotList;
     }
 }

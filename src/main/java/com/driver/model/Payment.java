@@ -1,7 +1,5 @@
 package com.driver.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 @Entity
@@ -9,16 +7,15 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private int id;
 
-    boolean paymentCompleted;
+    private  boolean paymentCompleted;
 
-    @Enumerated(value = EnumType.STRING)
-    PaymentMode paymentMode;
-
+    @Enumerated(EnumType.STRING)
+    private PaymentMode paymentMode;
     @OneToOne
-    @JsonIgnore
-    Reservation reservation;
+    @JoinColumn
+    private Reservation reservation;
 
     public Payment() {
     }
@@ -46,19 +43,19 @@ public class Payment {
         this.paymentCompleted = paymentCompleted;
     }
 
-    public PaymentMode getPaymentMode() {
-        return paymentMode;
-    }
-
-    public void setPaymentMode(PaymentMode paymentMode) {
-        this.paymentMode = paymentMode;
-    }
-
     public Reservation getReservation() {
         return reservation;
     }
 
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
+    }
+
+    public PaymentMode getPaymentMode() {
+        return paymentMode;
+    }
+
+    public void setPaymentMode(PaymentMode paymentMode) {
+        this.paymentMode = paymentMode;
     }
 }
