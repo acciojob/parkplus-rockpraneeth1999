@@ -1,5 +1,7 @@
 package com.driver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,11 +13,18 @@ public class Reservation {
 
     int numberOfHours;
 
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
     Spot spot;
 
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
     User user;
 
     @OneToOne(mappedBy = "reservation",cascade = CascadeType.ALL)
+    @JsonIgnore
     Payment payment;
 
     public Reservation() {

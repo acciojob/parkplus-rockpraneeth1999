@@ -1,5 +1,7 @@
 package com.driver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +16,8 @@ public class Payment {
     @Enumerated(value = EnumType.STRING)
     PaymentMode paymentMode;
 
+    @OneToOne
+    @JsonIgnore
     Reservation reservation;
 
     public Payment() {

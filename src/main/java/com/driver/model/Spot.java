@@ -1,5 +1,7 @@
 package com.driver.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +19,13 @@ public class Spot {
 
     boolean occupied;
 
+    @ManyToOne
+    @JoinColumn
+    @JsonIgnore
     ParkingLot parkingLot;
 
     @OneToMany(mappedBy = "spot",cascade = CascadeType.ALL)
+    @JsonIgnore
     List<Reservation> reservationList = new ArrayList<>();
 
     public Spot() {
