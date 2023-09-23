@@ -9,7 +9,6 @@ import com.driver.services.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -23,7 +22,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         ParkingLot newParkingLot = new ParkingLot();
         newParkingLot.setName(name);
         newParkingLot.setAddress(address);
-        newParkingLot.setSpotList(new ArrayList<>());
+        //newParkingLot.setSpotList(new ArrayList<>());
 
         return parkingLotRepository1.save(newParkingLot);
     }
@@ -33,7 +32,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         SpotType spotType = null;
         if(numberOfWheels <= 2){
             spotType = SpotType.TWO_WHEELER;
-        } else if(numberOfWheels == 4 || numberOfWheels == 3){
+        } else if(numberOfWheels >= 3 || numberOfWheels <= 4){
             spotType = SpotType.FOUR_WHEELER;
         } else {
             spotType = SpotType.OTHERS;
@@ -47,7 +46,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
         spot.setPricePerHour(pricePerHour);
         spot.setSpotType(spotType);
         spot.setParkingLot(parkingLotOptional.get());
-        spot.setReservationList(new ArrayList<>());
+        //spot.setReservationList(new ArrayList<>());
 
         Spot savedSpot = spotRepository1.save(spot);
         parkingLotOptional.get().getSpotList().add(savedSpot);
