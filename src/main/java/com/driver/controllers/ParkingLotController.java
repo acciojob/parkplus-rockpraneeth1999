@@ -29,6 +29,7 @@ public class ParkingLotController {
         //create a new spot in the parkingLot with given id
         //the spot type should be the next biggest type in case the number of wheels are not 2 or 4, for 4+ wheels, it is others
         Spot newSpot = parkingLotService.addSpot(parkingLotId, numberOfWheels, pricePerHour);
+        newSpot.setParkingLot(null);
         return new ResponseEntity<>(newSpot, HttpStatus.CREATED);
     }
 
